@@ -503,8 +503,11 @@
     </div>
 
     <script>
-        // Vercel API endpoint - will be /api/search on your deployed site
-        const API_ENDPOINT = '/api/search';
+        // Auto-detect if running locally or on Vercel
+        const API_ENDPOINT = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api/search'  // Local development
+            : '/api/search';  // Production on Vercel
+        
         const SEARXNG_URL = 'https://search.rhscz.eu';
 
         const landingSearchInput = document.getElementById('landingSearchInput');
