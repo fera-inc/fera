@@ -1,53 +1,630 @@
-// api/search.js - Vercel Serverless Function
-export default async function handler(req, res) {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+     <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fera Search</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  try {
-    const { q, categories = 'general', language = 'en' } = req.query;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
+            min-height: 100vh;
+        }
 
-    if (!q) {
-      return res.status(400).json({ error: 'Search query is required' });
-    }
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    // Build SearXNG URL
-    const searchParams = new URLSearchParams({
-      q,
-      categories,
-      language,
-    });
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
 
-    const searxngUrl = `https://search.rhscz.eu/search?${searchParams.toString()}`;
+        .logo-small {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ff6b35;
+            letter-spacing: -1px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
 
-    // Fetch from SearXNG
-    const response = await fetch(searxngUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-      },
-    });
+        .search-container {
+            flex: 1;
+            max-width: 600px;
+        }
 
-    if (!response.ok) {
-      throw new Error(`SearXNG returned status ${response.status}`);
-    }
+        .search-box {
+            position: relative;
+        }
 
-    const html = await response.text();
+        .search-input {
+            width: 100%;
+            padding: 12px 50px 12px 20px;
+            font-size: 15px;
+            border: 2px solid #ff6b35;
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: white;
+        }
 
-    // Return HTML
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.status(200).send(html);
+        .search-input:focus {
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
+        }
 
-  } catch (error) {
-    console.error('Search error:', error);
-    return res.status(500).json({ 
-      error: 'Failed to fetch search results',
-      message: error.message 
-    });
-  }
-}
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #ff5722;
+        }
+
+        .categories {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #ffb399;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .category-btn:hover {
+            background: #fff5f0;
+            border-color: #ff6b35;
+        }
+
+        .category-btn.active {
+            background: #ff6b35;
+            color: white;
+            border-color: #ff6b35;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .landing {
+            text-align: center;
+            padding: 100px 20px;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .logo-large {
+            font-size: 72px;
+            font-weight: 700;
+            color: #ff6b35;
+            letter-spacing: -2px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(255, 107, 53, 0.1);
+        }
+
+        .logo-subtitle {
+            font-size: 24px;
+            color: #999;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 50px;
+        }
+
+        .landing-search {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            animation: slideUp 0.8s ease-out 0.2s both;
+        }
+
+        .landing-search .search-input {
+            padding: 18px 60px 18px 25px;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.1);
+        }
+
+        .landing-search .search-btn {
+            padding: 12px 24px;
+            font-size: 15px;
+        }
+
+        .results-container {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .result-item {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #ff6b35;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .result-item:hover {
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.15);
+            transform: translateX(5px);
+        }
+
+        .result-title {
+            font-size: 18px;
+            color: #ff6b35;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .result-title a {
+            color: #ff6b35;
+            text-decoration: none;
+        }
+
+        .result-title a:hover {
+            text-decoration: underline;
+        }
+
+        .result-url {
+            font-size: 13px;
+            color: #4caf50;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        .result-content {
+            color: #666;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .image-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .image-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .image-item:hover {
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .image-item-info {
+            padding: 10px;
+        }
+
+        .image-item-title {
+            font-size: 13px;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .video-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .video-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .video-item:hover {
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.15);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-icon {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 107, 53, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .video-info {
+            padding: 15px;
+        }
+
+        .video-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .video-duration {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #ff6b35;
+            font-size: 16px;
+            display: none;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #ffb399;
+            border-top: 4px solid #ff6b35;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
+            border: 2px solid #ff6b35;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            line-height: 1.8;
+        }
+
+        .info-box h3 {
+            color: #ff6b35;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .info-box p {
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .info-box strong {
+            color: #ff6b35;
+        }
+
+        .info-box a {
+            color: #ff6b35;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .info-box a:hover {
+            text-decoration: underline;
+        }
+
+        .redirect-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 30px;
+            background: #ff6b35;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .redirect-btn:hover {
+            background: #ff5722;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .no-results-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+            }
+
+            .search-container {
+                order: 3;
+                flex-basis: 100%;
+            }
+
+            .logo-large {
+                font-size: 56px;
+            }
+
+            .logo-subtitle {
+                font-size: 18px;
+            }
+
+            .image-results {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .video-results {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing Page -->
+    <div class="landing" id="landing">
+        <div class="logo-large">fera</div>
+        <div class="logo-subtitle">search</div>
+        <div class="landing-search">
+            <div class="search-box">
+                <input type="text" class="search-input" id="landingSearchInput" placeholder="Search the web..." autocomplete="off">
+                <button class="search-btn" id="landingSearchBtn">Search</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header (Hidden initially) -->
+    <div class="header" id="header" style="display: none;">
+        <div class="header-content">
+            <div class="logo-small" id="logoHome">fera</div>
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="headerSearchInput" placeholder="Search..." autocomplete="off">
+                    <button class="search-btn" id="headerSearchBtn">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="categories" id="categories" style="display: none;">
+        <button class="category-btn active" data-category="general">All</button>
+        <button class="category-btn" data-category="images">Images</button>
+        <button class="category-btn" data-category="videos">Videos</button>
+        <button class="category-btn" data-category="news">News</button>
+        <button class="category-btn" data-category="it">IT</button>
+        <button class="category-btn" data-category="science">Science</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <div>Searching...</div>
+        </div>
+        <div class="results-container" id="results"></div>
+    </div>
+
+    <script>
+        // Auto-detect if running locally or on Vercel
+        const API_ENDPOINT = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api/search'  // Local development
+            : '/api/search';  // Production on Vercel
+        
+        const SEARXNG_URL = 'https://search.rhscz.eu';
+
+        const landingSearchInput = document.getElementById('landingSearchInput');
+        const landingSearchBtn = document.getElementById('landingSearchBtn');
+        const headerSearchInput = document.getElementById('headerSearchInput');
+        const headerSearchBtn = document.getElementById('headerSearchBtn');
+        const landing = document.getElementById('landing');
+        const header = document.getElementById('header');
+        const categories = document.getElementById('categories');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const logoHome = document.getElementById('logoHome');
+
+        let currentCategory = 'general';
+        let currentQuery = '';
+
+        // Category button clicks
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.category;
+                if (currentQuery) {
+                    performSearch(currentQuery, currentCategory);
+                }
+            });
+        });
+
+        // Logo click - return to home
+        logoHome.addEventListener('click', () => {
+            landing.style.display = 'block';
+            header.style.display = 'none';
+            categories.style.display = 'none';
+            results.innerHTML = '';
+            landingSearchInput.value = '';
+            currentQuery = '';
+        });
+
+        // Search function using Vercel API
+        async function performSearch(query, category = 'general') {
+            if (!query.trim()) return;
+
+            currentQuery = query;
+
+            // Switch to results view
+            landing.style.display = 'none';
+            header.style.display = 'block';
+            categories.style.display = 'flex';
+            headerSearchInput.value = query;
+
+            loading.classList.add('active');
+            results.innerHTML = '';
+
+            try {
+                const searchParams = new URLSearchParams({
+                    q: query,
+                    categories: category,
+                    language: 'en'
+                });
+
+                // Call Vercel API endpoint
+                const response = await fetch(`${API_ENDPOINT}?${searchParams.toString()}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+
+                const html = await response.text();
+                parseSearchResults(html, category);
+
+            } catch (error) {
+                console.error('Search error:', error);
+                showError(error.message || 'Could not complete the search. Please try again.');
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        function showError(message) {
+            results.innerHTML = `
+                <div class="info-box" style="border-color: #f44336; background: #ffebee;">
+                    <h3 style="color: #f44336;">⚠️ Search Error</h3>
+                    <p style="color: #666;">${message}</p>
+                    <p style="margin-top: 15px; font-size: 14px; color: #999;">
+                        If the problem persists, try searching directly on 
+                        <a href="${SEARXNG_URL}" target="_blank">SearXNG</a>
+                    </p>
+                </div>
+            `;
+        }
+
+        // Event listeners for landing page search
+        landingSearchBtn.addEventListener('click', () => {
+            performSearch(landingSearchInput.value, 'general');
+        });
+
+        landingSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch(landingSearchInput.value, 'general');
+            }
+        });
+
+        // Event listeners for header search
+        headerSearchBtn.addEventListener('click', () => {
+            performSearch(headerSearchInput.value, currentCategory);
+        });
+
+        headerSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch(headerSearchInput.value, currentCategory);
+            }
+        });
+
+        // Auto-focus on landing search
+        landingSearchInput.focus();
+    </script>
+</body>
+</html>
