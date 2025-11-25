@@ -11,18 +11,50 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #ff6b35;
+            --primary-dark: #ff5722;
+            --primary-light: #ffb399;
+            --bg-gradient-start: #fff5f0;
+            --bg-gradient-end: #ffe8dc;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-tertiary: #999;
+            --card-bg: white;
+            --shadow: rgba(0, 0, 0, 0.05);
+            --shadow-hover: rgba(255, 107, 53, 0.15);
+        }
+
+        body.dark-mode {
+            --primary: #ff6b35;
+            --primary-dark: #ff8c5a;
+            --primary-light: #ff9966;
+            --bg-gradient-start: #1a1a1a;
+            --bg-gradient-end: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-tertiary: #808080;
+            --card-bg: #2a2a2a;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --shadow-hover: rgba(255, 107, 53, 0.3);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
             min-height: 100vh;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
         }
 
         .header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            background: var(--card-bg);
+            box-shadow: 0 2px 10px var(--shadow);
             position: sticky;
             top: 0;
             z-index: 100;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .header-content {
@@ -37,10 +69,37 @@
         .logo-small {
             font-size: 32px;
             font-weight: 700;
-            color: #ff6b35;
+            color: var(--primary);
             letter-spacing: -1px;
             cursor: pointer;
             flex-shrink: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .icon-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-light);
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
         }
 
         .search-container {
@@ -56,15 +115,16 @@
             width: 100%;
             padding: 12px 50px 12px 20px;
             font-size: 15px;
-            border: 2px solid #ff6b35;
+            border: 2px solid var(--primary);
             border-radius: 50px;
             outline: none;
             transition: all 0.3s ease;
-            background: white;
+            background: var(--card-bg);
+            color: var(--text-primary);
         }
 
         .search-input:focus {
-            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
+            box-shadow: 0 4px 15px var(--shadow-hover);
         }
 
         .search-btn {
@@ -72,7 +132,7 @@
             right: 5px;
             top: 50%;
             transform: translateY(-50%);
-            background: #ff6b35;
+            background: var(--primary);
             color: white;
             border: none;
             padding: 8px 20px;
@@ -84,7 +144,7 @@
         }
 
         .search-btn:hover {
-            background: #ff5722;
+            background: var(--primary-dark);
         }
 
         .categories {
@@ -103,27 +163,27 @@
 
         .category-btn {
             padding: 10px 20px;
-            background: white;
-            border: 2px solid #ffb399;
+            background: var(--card-bg);
+            border: 2px solid var(--primary-light);
             border-radius: 25px;
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            color: #666;
+            color: var(--text-secondary);
             transition: all 0.3s ease;
             white-space: nowrap;
             flex-shrink: 0;
         }
 
         .category-btn:hover {
-            background: #fff5f0;
-            border-color: #ff6b35;
+            background: var(--bg-gradient-start);
+            border-color: var(--primary);
         }
 
         .category-btn.active {
-            background: #ff6b35;
+            background: var(--primary);
             color: white;
-            border-color: #ff6b35;
+            border-color: var(--primary);
         }
 
         .main-content {
@@ -141,7 +201,7 @@
         .logo-large {
             font-size: 72px;
             font-weight: 700;
-            color: #ff6b35;
+            color: var(--primary);
             letter-spacing: -2px;
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(255, 107, 53, 0.1);
@@ -149,7 +209,7 @@
 
         .logo-subtitle {
             font-size: 24px;
-            color: #999;
+            color: var(--text-tertiary);
             font-weight: 300;
             letter-spacing: 3px;
             margin-bottom: 50px;
@@ -178,29 +238,31 @@
         }
 
         .result-item {
-            background: white;
+            background: var(--card-bg);
             padding: 20px;
             margin-bottom: 15px;
             border-radius: 12px;
-            border-left: 4px solid #ff6b35;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 10px var(--shadow);
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .result-item:hover {
-            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.15);
+            box-shadow: 0 4px 20px var(--shadow-hover);
             transform: translateX(5px);
         }
 
         .result-title {
             font-size: 18px;
-            color: #ff6b35;
+            color: var(--primary);
             margin-bottom: 8px;
             font-weight: 600;
         }
 
         .result-title a {
-            color: #ff6b35;
+            color: var(--primary);
             text-decoration: none;
         }
 
@@ -216,9 +278,25 @@
         }
 
         .result-content {
-            color: #666;
+            color: var(--text-secondary);
             line-height: 1.6;
             font-size: 14px;
+        }
+
+        .translate-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .translate-btn:hover {
+            background: var(--primary-dark);
         }
 
         .image-results {
@@ -228,16 +306,16 @@
         }
 
         .image-item {
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 10px var(--shadow);
             transition: all 0.3s ease;
             cursor: pointer;
         }
 
         .image-item:hover {
-            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.15);
+            box-shadow: 0 4px 20px var(--shadow-hover);
             transform: translateY(-5px);
         }
 
@@ -253,7 +331,7 @@
 
         .image-item-title {
             font-size: 13px;
-            color: #333;
+            color: var(--text-primary);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -266,15 +344,15 @@
         }
 
         .video-item {
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 10px var(--shadow);
             transition: all 0.3s ease;
         }
 
         .video-item:hover {
-            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.15);
+            box-shadow: 0 4px 20px var(--shadow-hover);
         }
 
         .video-thumbnail {
@@ -313,19 +391,19 @@
         .video-title {
             font-size: 15px;
             font-weight: 600;
-            color: #333;
+            color: var(--text-primary);
             margin-bottom: 8px;
         }
 
         .video-duration {
             font-size: 12px;
-            color: #999;
+            color: var(--text-tertiary);
         }
 
         .loading {
             text-align: center;
             padding: 40px;
-            color: #ff6b35;
+            color: var(--primary);
             font-size: 16px;
             display: none;
         }
@@ -338,79 +416,224 @@
             display: inline-block;
             width: 40px;
             height: 40px;
-            border: 4px solid #ffb399;
-            border-top: 4px solid #ff6b35;
+            border: 4px solid var(--primary-light);
+            border-top: 4px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 10px;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* Settings Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
         }
 
-        .info-box {
-            background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
-            border: 2px solid #ff6b35;
-            padding: 25px;
-            border-radius: 12px;
-            margin: 20px 0;
-            line-height: 1.8;
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .info-box h3 {
-            color: #ff6b35;
-            margin-bottom: 15px;
-            font-size: 18px;
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px var(--shadow);
+            animation: slideUp 0.3s ease;
         }
 
-        .info-box p {
-            color: #666;
-            margin-bottom: 12px;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-light);
         }
 
-        .info-box strong {
-            color: #ff6b35;
+        .modal-header h2 {
+            color: var(--primary);
+            font-size: 24px;
         }
 
-        .info-box a {
-            color: #ff6b35;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .info-box a:hover {
-            text-decoration: underline;
-        }
-
-        .redirect-btn {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 12px 30px;
-            background: #ff6b35;
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
             transition: all 0.3s ease;
         }
 
-        .redirect-btn:hover {
-            background: #ff5722;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        .close-btn:hover {
+            background: var(--primary);
+            color: white;
         }
 
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
+        .setting-item {
+            margin-bottom: 25px;
         }
 
-        .no-results-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
+        .setting-item label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .setting-item select,
+        .setting-item input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--primary-light);
+            border-radius: 10px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .setting-item select:focus,
+        .setting-item input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: var(--text-tertiary);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            left: 33px;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Translator Panel */
+        .translator-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px var(--shadow);
+            width: 350px;
+            display: none;
+            z-index: 999;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .translator-panel.active {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        .translator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .translator-header h3 {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .translator-panel textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--primary-light);
+            border-radius: 10px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 10px;
+            outline: none;
+        }
+
+        .translator-panel select {
+            width: 48%;
+            padding: 10px;
+            border: 2px solid var(--primary-light);
+            border-radius: 10px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .lang-selector {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .translate-result {
+            background: var(--bg-gradient-start);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.6;
+            min-height: 60px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @keyframes fadeIn {
@@ -427,6 +650,17 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-tertiary);
+        }
+
+        .no-results-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
         }
 
         @media (max-width: 768px) {
@@ -447,12 +681,10 @@
                 font-size: 18px;
             }
 
-            .image-results {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-
-            .video-results {
-                grid-template-columns: 1fr;
+            .translator-panel {
+                width: calc(100% - 40px);
+                left: 20px;
+                right: 20px;
             }
         }
     </style>
@@ -470,7 +702,7 @@
         </div>
     </div>
 
-    <!-- Header (Hidden initially) -->
+    <!-- Header -->
     <div class="header" id="header" style="display: none;">
         <div class="header-content">
             <div class="logo-small" id="logoHome">fera</div>
@@ -479,6 +711,11 @@
                     <input type="text" class="search-input" id="headerSearchInput" placeholder="Search..." autocomplete="off">
                     <button class="search-btn" id="headerSearchBtn">Search</button>
                 </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" id="translatorBtn" title="Translator">🌐</button>
+                <button class="icon-btn" id="themeToggle" title="Toggle Theme">🌙</button>
+                <button class="icon-btn" id="settingsBtn" title="Settings">⚙️</button>
             </div>
         </div>
     </div>
@@ -502,14 +739,116 @@
         <div class="results-container" id="results"></div>
     </div>
 
-    <script>
-        // Auto-detect if running locally or on Vercel
-        const API_ENDPOINT = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:3000/api/search'  // Local development
-            : '/api/search';  // Production on Vercel
-        
-        const SEARXNG_URL = 'https://search.rhscz.eu';
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="close-btn" id="closeSettings">&times;</button>
+            </div>
+            
+            <div class="setting-item">
+                <label>SearXNG URL</label>
+                <input type="text" id="searxngUrl" placeholder="https://your-ngrok-url.ngrok-free.dev">
+            </div>
 
+            <div class="setting-item">
+                <label>Search Language</label>
+                <select id="searchLanguage">
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="it">Italian</option>
+                    <option value="pt">Portuguese</option>
+                    <option value="ru">Russian</option>
+                    <option value="ja">Japanese</option>
+                    <option value="ko">Korean</option>
+                    <option value="zh">Chinese</option>
+                    <option value="ar">Arabic</option>
+                    <option value="hi">Hindi</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <div class="toggle-container">
+                    <label>Dark Mode</label>
+                    <div class="toggle-switch" id="darkModeToggle"></div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="toggle-container">
+                    <label>Blur Effects</label>
+                    <div class="toggle-switch active" id="blurToggle"></div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="toggle-container">
+                    <label>Safe Search</label>
+                    <div class="toggle-switch active" id="safeSearchToggle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Translator Panel -->
+    <div class="translator-panel" id="translatorPanel">
+        <div class="translator-header">
+            <h3>Translator</h3>
+            <button class="close-btn" id="closeTranslator">&times;</button>
+        </div>
+        <textarea id="translateInput" placeholder="Enter text to translate..."></textarea>
+        <div class="lang-selector">
+            <select id="fromLang">
+                <option value="auto">Auto Detect</option>
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="it">Italian</option>
+                <option value="pt">Portuguese</option>
+                <option value="ru">Russian</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">Korean</option>
+                <option value="zh-CN">Chinese</option>
+                <option value="ar">Arabic</option>
+                <option value="hi">Hindi</option>
+            </select>
+            <select id="toLang">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="it">Italian</option>
+                <option value="pt">Portuguese</option>
+                <option value="ru">Russian</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">Korean</option>
+                <option value="zh-CN">Chinese</option>
+                <option value="ar">Arabic</option>
+                <option value="hi">Hindi</option>
+            </select>
+        </div>
+        <button class="search-btn" style="position: static; width: 100%; margin-top: 10px;" id="translateBtn">Translate</button>
+        <div class="translate-result" id="translateResult">Translation will appear here...</div>
+    </div>
+
+    <script>
+        // Settings and state management
+        const settings = {
+            searxngUrl: 'https://nonimperiously-subterranean-sunni.ngrok-free.dev',
+            language: 'en',
+            darkMode: false,
+            blurEnabled: true,
+            safeSearch: true
+        };
+
+        // Load settings from memory
+        const savedSettings = {};
+        
+        // DOM Elements
         const landingSearchInput = document.getElementById('landingSearchInput');
         const landingSearchBtn = document.getElementById('landingSearchBtn');
         const headerSearchInput = document.getElementById('headerSearchInput');
@@ -521,109 +860,94 @@
         const loading = document.getElementById('loading');
         const results = document.getElementById('results');
         const logoHome = document.getElementById('logoHome');
+        
+        // Settings
+        const settingsModal = document.getElementById('settingsModal');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const closeSettings = document.getElementById('closeSettings');
+        const searxngUrlInput = document.getElementById('searxngUrl');
+        const searchLanguageSelect = document.getElementById('searchLanguage');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const blurToggle = document.getElementById('blurToggle');
+        const safeSearchToggle = document.getElementById('safeSearchToggle');
+        const themeToggle = document.getElementById('themeToggle');
+        
+        // Translator
+        const translatorPanel = document.getElementById('translatorPanel');
+        const translatorBtn = document.getElementById('translatorBtn');
+        const closeTranslator = document.getElementById('closeTranslator');
+        const translateInput = document.getElementById('translateInput');
+        const translateBtn = document.getElementById('translateBtn');
+        const translateResult = document.getElementById('translateResult');
+        const fromLang = document.getElementById('fromLang');
+        const toLang = document.getElementById('toLang');
 
         let currentCategory = 'general';
         let currentQuery = '';
 
-        // Category button clicks
-        categoryBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                categoryBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentCategory = btn.dataset.category;
-                if (currentQuery) {
-                    performSearch(currentQuery, currentCategory);
+        // Initialize
+        searxngUrlInput.value = settings.searxngUrl;
+        searchLanguageSelect.value = settings.language;
+
+        // Apply blur effect
+        function applyBlurEffect(enabled) {
+            const elements = document.querySelectorAll('.header, .result-item, .translator-panel, .modal-content');
+            elements.forEach(el => {
+                if (enabled) {
+                    el.style.backdropFilter = 'blur(10px)';
+                    el.style.webkitBackdropFilter = 'blur(10px)';
+                } else {
+                    el.style.backdropFilter = 'none';
+                    el.style.webkitBackdropFilter = 'none';
+                }
+            });
+        }
+
+        // Settings Modal
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.classList.add('active');
+        });
+
+        closeSettings.addEventListener('click', () => {
+            settingsModal.classList.remove('active');
+            saveSettings();
+        });
+
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.remove('active');
+                saveSettings();
+            }
+        });
+
+        function saveSettings() {
+            settings.searxngUrl = searxngUrlInput.value;
+            settings.language = searchLanguageSelect.value;
+            settings.darkMode = darkModeToggle.classList.contains('active');
+            settings.blurEnabled = blurToggle.classList.contains('active');
+            settings.safeSearch = safeSearchToggle.classList.contains('active');
+        }
+
+        // Toggle switches
+        [darkModeToggle, blurToggle, safeSearchToggle].forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('active');
+                
+                if (toggle === darkModeToggle) {
+                    document.body.classList.toggle('dark-mode');
+                    themeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+                } else if (toggle === blurToggle) {
+                    applyBlurEffect(toggle.classList.contains('active'));
                 }
             });
         });
 
-        // Logo click - return to home
-        logoHome.addEventListener('click', () => {
-            landing.style.display = 'block';
-            header.style.display = 'none';
-            categories.style.display = 'none';
-            results.innerHTML = '';
-            landingSearchInput.value = '';
-            currentQuery = '';
+        // Theme toggle button
+        themeToggle.addEventListener('click', () => {
+            darkModeToggle.click();
         });
 
-        // Search function using Vercel API
-        async function performSearch(query, category = 'general') {
-            if (!query.trim()) return;
-
-            currentQuery = query;
-
-            // Switch to results view
-            landing.style.display = 'none';
-            header.style.display = 'block';
-            categories.style.display = 'flex';
-            headerSearchInput.value = query;
-
-            loading.classList.add('active');
-            results.innerHTML = '';
-
-            try {
-                const searchParams = new URLSearchParams({
-                    q: query,
-                    categories: category,
-                    language: 'en'
-                });
-
-                // Call Vercel API endpoint
-                const response = await fetch(`${API_ENDPOINT}?${searchParams.toString()}`);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
-                }
-
-                const html = await response.text();
-                parseSearchResults(html, category);
-
-            } catch (error) {
-                console.error('Search error:', error);
-                showError(error.message || 'Could not complete the search. Please try again.');
-            } finally {
-                loading.classList.remove('active');
-            }
-        }
-
-        function showError(message) {
-            results.innerHTML = `
-                <div class="info-box" style="border-color: #f44336; background: #ffebee;">
-                    <h3 style="color: #f44336;">⚠️ Search Error</h3>
-                    <p style="color: #666;">${message}</p>
-                    <p style="margin-top: 15px; font-size: 14px; color: #999;">
-                        If the problem persists, try searching directly on 
-                        <a href="${SEARXNG_URL}" target="_blank">SearXNG</a>
-                    </p>
-                </div>
-            `;
-        }
-
-        // Event listeners for landing page search
-        landingSearchBtn.addEventListener('click', () => {
-            performSearch(landingSearchInput.value, 'general');
+        // Translator
+        translatorBtn.addEventListener('click', () => {
+            translatorPanel.classList.toggle('active');
         });
-
-        landingSearchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                performSearch(landingSearchInput.value, 'general');
-            }
-        });
-
-        // Event listeners for header search
-        headerSearchBtn.addEventListener('click', () => {
-            performSearch(headerSearchInput.value, currentCategory);
-        });
-
-        headerSearchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                performSearch(headerSearchInput.value, currentCategory);
-            }
-        });
-
-        // Auto-focus on landing search
-        landingSearchInput.focus();
-    </script>
-</body>
-</html>
